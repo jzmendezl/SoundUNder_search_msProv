@@ -1,0 +1,42 @@
+version: '3.9'
+services:
+  search_db:
+    image: postgres:13.2
+    restart: on-failure
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_DB=soundUNder_search_db
+      - POSTGRES_USER=devuser
+      - POSTGRES_PASSWORD=1234
+    volumes:
+      - search_data:/var/lib/postgresql/data
+
+  soundunder_search_ms:
+    container_name: soundUNder_search_ms
+    restart: on-failure
+    build: .
+    image: soundunder_search_ms
+    command: >
+      sh -c "python manage.py wait_for_db &&
+             python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - SoundUNder_search_ms:/SoundUNder_search_ms
+    ports:
+      - 8000:8000
+    environment:
+      - SECRET_KEY=devsecretkey
+      - DEBUG=1
+      - DB_HOST=search_db
+      - DB_NAME=soundUNder_search_db
+      - DB_USER=devuser
+      - DB_PASS=1234
+    depends_on:
+      - search_db
+
+volumes:
+  SoundUNder_search_ms:
+  search_data:
+
+
