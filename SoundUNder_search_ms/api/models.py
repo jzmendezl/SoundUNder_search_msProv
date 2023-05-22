@@ -7,7 +7,6 @@ class Song(models.Model):
     author = models.CharField(max_length=100)
     name = models.CharField(max_length=100)
     album = models.CharField(max_length=100)
-    idSong =  models.IntegerField(max_length=100)
 
     class Meta: 
         verbose_name = 'Songs'
